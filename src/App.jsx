@@ -1,6 +1,6 @@
 import LoginForm from '@/components/LoginForm';
 import OceanBackground from '@/components/OceanBackground';
-import { LOGOS } from '@/config';
+import { IS_DESIGN_PREVIEW, LOGOS } from '@/config';
 
 // The photo of a ship at sea is the whole page. The sign-in card floats on
 // the open water: to the right of the ship on large screens, below it on phones.
@@ -19,6 +19,13 @@ export default function App() {
             <br />
             Maritime Board
           </p>
+
+          {/* Shown everywhere except smartport.ap.gov.in, where sign-in really works */}
+          {IS_DESIGN_PREVIEW && (
+            <p className="ml-auto rounded-full bg-white/15 px-3 py-1 text-xs whitespace-nowrap text-white ring-1 ring-white/25 backdrop-blur-sm">
+              Design preview<span className="hidden md:inline"> · sign-in works only on smartport.ap.gov.in</span>
+            </p>
+          )}
         </header>
 
         <main className="flex flex-1 items-start justify-center px-4 pt-[calc(66vw-5rem)] pb-10 sm:pt-[calc(48vw-3.5rem)] lg:items-center lg:justify-end lg:px-[3.5vw] lg:py-4 2xl:px-[7vw]">

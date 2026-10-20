@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CircleAlert, Eye, EyeOff, GraduationCap, Info, LoaderCircle, UserPlus } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, GraduationCap, LoaderCircle, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -39,7 +39,7 @@ export default function LoginForm() {
       return;
     }
 
-    // The preview note above the form already explains why nothing happens.
+    // The "Design preview" note in the page header explains why nothing happens.
     if (IS_DESIGN_PREVIEW) {
       return;
     }
@@ -73,13 +73,6 @@ export default function LoginForm() {
             Gate passes, port dues and vessel registration for the ports of Andhra Pradesh.
           </p>
         </div>
-
-        {IS_DESIGN_PREVIEW && (
-          <Alert>
-            <Info />
-            <AlertDescription>Design preview. Sign-in only works on smartport.ap.gov.in.</AlertDescription>
-          </Alert>
-        )}
 
         {error && (
           <Alert variant="destructive">
