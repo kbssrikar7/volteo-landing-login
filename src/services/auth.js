@@ -1,7 +1,7 @@
 // All communication with the Smartport authentication API lives here,
 // so components never call fetch() directly.
 
-import { STORAGE_KEYS } from '../config';
+import { STORAGE_KEYS } from '@/config';
 
 /**
  * Logs the user in and returns their profile.

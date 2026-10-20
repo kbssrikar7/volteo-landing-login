@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { login } from '../services/auth';
-import { AFTER_LOGIN_URL, IS_DESIGN_PREVIEW, LINKS, PASSWORD_RESET_URL, STORAGE_KEYS } from '../config';
+import { ArrowRight, CircleAlert, Eye, EyeOff, Info, LoaderCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { login } from '@/services/auth';
+import { AFTER_LOGIN_URL, IS_DESIGN_PREVIEW, LINKS, PASSWORD_RESET_URL, STORAGE_KEYS } from '@/config';
 
 // Reads the email saved by "Remember me" (empty string if none).
 function getRememberedEmail() {
@@ -31,8 +37,8 @@ export default function LoginForm() {
       return;
     }
 
+    // The preview note above the form already explains why nothing happens.
     if (IS_DESIGN_PREVIEW) {
-      setError('This is a design preview. Sign-in is disabled here.');
       return;
     }
 
@@ -57,30 +63,39 @@ export default function LoginForm() {
   }
 
   return (
-    <section className="login" aria-labelledby="login-title">
-      <h1 id="login-title" className="login-title">Sign in</h1>
-      <p className="login-subtitle">Use the email address registered with Smartport.</p>
+    <section className="w-full max-w-sm" aria-labelledby="login-title">
+      <h1 id="login-title" className="text-3xl font-semibold tracking-tight">
+        Sign in
+      </h1>
+      <p className="mt-1.5 text-muted-foreground">
+        Use the email address registered with Smartport.
+      </p>
 
-      {IS_DESIGN_PREVIEW && (
-        <p className="preview-banner">
-          Design preview. Sign-in only works on smartport.ap.gov.in.
-        </p>
-      )}
+      <div className="mt-8 grid gap-3 empty:hidden">
+        {IS_DESIGN_PREVIEW && (
+          <Alert>
+            <Info />
+            <AlertDescription>Design preview. Sign-in only works on smartport.ap.gov.in.</AlertDescription>
+          </Alert>
+        )}
 
-      {error && (
-        <p className="alert" role="alert">
-          {error}
-        </p>
-      )}
+        {error && (
+          <Alert variant="destructive">
+            <CircleAlert />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+      </div>
 
-      <form className="login-form" onSubmit={handleSubmit} noValidate>
-        <div className="field">
-          <label htmlFor="email">Email address</label>
-          <input
+      <form className="mt-6 grid gap-5" onSubmit={handleSubmit} noValidate>
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email address</Label>
+          <Input
             id="email"
             type="email"
             autoComplete="username"
             placeholder="name@company.com"
+            className="h-11"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoFocus
@@ -88,53 +103,71 @@ export default function LoginForm() {
           />
         </div>
 
-        <div className="field">
-          <div className="field-label-row">
-            <label htmlFor="password">Password</label>
-            <a href={LINKS.forgotPassword} className="link">Forgot password?</a>
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <a
+              href={LINKS.forgotPassword}
+              className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Forgot password?
+            </a>
           </div>
-          <div className="password-wrapper">
-            <input
+          <div className="relative">
+            <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
+              className="h-11 pr-11"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button
+            <Button
               type="button"
-              className="password-toggle"
+              variant="ghost"
+              size="icon-sm"
+              className="absolute top-1/2 right-1.5 -translate-y-1/2 text-muted-foreground"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
+              {showPassword ? <EyeOff /> : <Eye />}
+            </Button>
           </div>
         </div>
 
-        <label className="checkbox">
-          <input
-            type="checkbox"
+        <div className="flex items-center gap-2.5">
+          <Checkbox
+            id="remember"
             checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
+            onCheckedChange={(checked) => setRememberMe(checked === true)}
           />
-          Keep my email on this device
-        </label>
+          <Label htmlFor="remember" className="font-normal text-muted-foreground">
+            Keep my email on this device
+          </Label>
+        </div>
 
-        <button type="submit" className="button" disabled={isSubmitting}>
+        <Button type="submit" size="lg" className="mt-1 h-11 w-full" disabled={isSubmitting}>
+          {isSubmitting && <LoaderCircle className="animate-spin" />}
           {isSubmitting ? 'Signing in…' : 'Sign in'}
-        </button>
+        </Button>
       </form>
 
-      <p className="login-signup">
-        New to Smartport? <a href={LINKS.signUp} className="link">Create an account</a>
+      <p className="mt-6 text-sm text-muted-foreground">
+        New to Smartport?{' '}
+        <a href={LINKS.signUp} className="font-medium text-foreground underline underline-offset-4">
+          Create an account
+        </a>
       </p>
 
-      <a href={LINKS.ivRegistration} className="upskill">
-        <span className="upskill-label">IV Upskill Program</span>
-        <span className="upskill-action">Register →</span>
-      </a>
+      <Button asChild variant="outline" className="mt-10 h-12 w-full justify-between px-4">
+        <a href={LINKS.ivRegistration}>
+          IV Upskill Program
+          <span className="flex items-center gap-1.5 font-normal text-muted-foreground">
+            Register <ArrowRight />
+          </span>
+        </a>
+      </Button>
     </section>
   );
 }
