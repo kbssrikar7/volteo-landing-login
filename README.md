@@ -30,14 +30,14 @@ every push to `main` redeploys automatically.
 ## Project structure
 
 ```
-public/img/               Official logos (Smartport wordmark, APMB emblem)
+public/img/               Official logos and the Krishnapatnam Port photo
 src/
   main.jsx                Entry point: mounts <App /> and loads styles
-  App.jsx                 Page layout: Header, LoginForm, Footer
+  App.jsx                 Page layout: PhotoPanel (left), LoginForm + Footer (right)
   config.js               URLs, localStorage keys and logo paths (edit here first)
   styles.css              All styles; colors/sizes are CSS variables at the top
   components/
-    Header.jsx            Slim top bar with the Smartport and APMB logos
+    PhotoPanel.jsx        Black-and-white port photo with the APMB emblem and photo credit
     LoginForm.jsx         The sign-in form: fields, validation, submit
     Footer.jsx            Copyright and browser note
   services/
@@ -65,9 +65,10 @@ in `src/config.js`.
 
 ## Design notes
 
-- Monochrome on purpose: white page, near-black text and button, so the
-  Smartport and APMB logos are the only colour. All colours are CSS
-  variables at the top of `src/styles.css`.
+- Black and white on purpose: a black-and-white port photo on the left, a
+  white form on the right, near-black text and button. The logos are the
+  only colour. All colours are CSS variables at the top of `src/styles.css`.
+- On tablets and phones the photo becomes a banner above the form.
 - Font: IBM Plex Sans (loaded from Google Fonts in `index.html`).
 - Always light: the page stays white even if the visitor's device is in dark mode.
 - In production, React is loaded from jsDelivr via an import map (see
@@ -77,13 +78,22 @@ in `src/config.js`.
 
 ## What changed from the old page
 
-- Single centred form under a slim header with both official logos
+- Split layout: photo of an Andhra Pradesh port beside the sign-in form
 - Visible labels instead of placeholder-only fields
 - Show/Hide password toggle
 - "Forgot password?" next to the password field; "Create an account" below the button
 - "Keep my email on this device" actually remembers the email
 - Clear error messages and a "Signing in…" state while waiting
 - Responsive on mobile; consistent colours defined as CSS variables
+
+## Photo credit
+
+`public/img/krishnapatnam-port.jpg` is a black-and-white crop of
+[Krishnapatnam port cranes unloading a ship](https://commons.wikimedia.org/wiki/File:Krishnapatnam_port_cranes_unloadng_a_ship.jpg)
+by Rahmanuddin, licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+The licence requires the credit, so keep it visible on the page
+(`src/components/PhotoPanel.jsx`). If you replace the photo, update the
+credit there too.
 
 ## License
 

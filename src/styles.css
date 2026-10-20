@@ -1,8 +1,8 @@
 /* ==========================================================================
    Smartport login styles
 
-   Deliberately monochrome: white page, near-black text and button, so the
-   Smartport and APMB logos are the only colour on the page.
+   Black and white: a black-and-white port photo on the left, a white form
+   on the right, near-black text and button. The logos are the only colour.
    The page is always light, even when the visitor's device is in dark mode.
    All colours are variables in :root.
    ========================================================================== */
@@ -23,6 +23,11 @@
   --error-text: #b42318;
   --notice-bg: #f5f5f5;
   --notice-text: #4a4a4a;
+
+  /* Photo panel */
+  --photo-bg: #1a1a1a;
+  --on-photo: #ffffff;
+  --on-photo-muted: rgba(255, 255, 255, 0.72);
 
   --radius: 8px;
   --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -53,67 +58,128 @@ p {
 
 /* ---------- Page layout ---------- */
 
-.page {
+.layout {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.form-column {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.page-main {
+.form-header {
+  padding: 32px 48px 0;
+}
+
+.form-wordmark {
+  display: block;
+  height: 26px;
+}
+
+.form-main {
   flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 12vh max(16px, env(safe-area-inset-left, 0px)) 64px;
+  padding: 48px;
 }
 
-/* ---------- Header ---------- */
+/* ---------- Photo panel (left) ---------- */
 
-.header {
+.photo-panel {
+  position: relative;
+  min-height: 100vh;
+  background: var(--photo-bg);
+  overflow: hidden;
+}
+
+.photo-panel-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 50%;
+}
+
+/* Darken the bottom of the photo so the text on it stays readable */
+.photo-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.35) 38%,
+    rgba(0, 0, 0, 0) 65%
+  );
+}
+
+.photo-panel-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  display: grid;
+  gap: 28px;
+  padding: 48px;
+  color: var(--on-photo);
+}
+
+.photo-panel-org {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
-  padding: 16px max(24px, env(safe-area-inset-left, 0px));
-  border-bottom: 1px solid var(--border);
 }
 
-.header-wordmark {
-  height: 24px;
+.photo-panel-emblem {
+  width: 64px;
+  height: 64px;
+  flex: none;
 }
 
-.header-org {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.photo-panel-org-name {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
-.header-emblem {
-  width: 36px;
-  height: 36px;
+.photo-panel-org-sub {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--on-photo-muted);
 }
 
-.header-org-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
+.photo-panel-credit {
+  font-size: 12px;
+  color: var(--on-photo-muted);
+}
+
+.photo-panel-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ---------- Sign-in form ---------- */
 
 .login {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
 }
 
 .login-title {
   margin: 0;
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .login-subtitle {
-  margin: 6px 0 28px;
+  margin: 6px 0 32px;
   color: var(--text-muted);
 }
 
@@ -142,7 +208,7 @@ p {
 
 .field input {
   width: 100%;
-  height: 44px;
+  height: 46px;
   padding: 0 12px;
   font: inherit;
   color: inherit;
@@ -218,7 +284,7 @@ p {
 /* ---------- Button ---------- */
 
 .button {
-  height: 46px;
+  height: 48px;
   margin-top: 4px;
   font: inherit;
   font-weight: 500;
@@ -314,36 +380,76 @@ p {
 .footer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px 20px;
-  padding: 24px 16px;
+  padding: 24px 48px;
   font-size: 12px;
   color: var(--text-muted);
 }
 
-/* ---------- Small screens ---------- */
+/* ---------- Tablets and phones: photo becomes a banner on top ---------- */
 
-@media (max-width: 560px) {
-  .header {
-    padding: 12px max(16px, env(safe-area-inset-left, 0px));
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    /* Banner keeps its own height; the form takes the rest */
+    grid-template-rows: auto 1fr;
   }
 
-  .header-wordmark {
-    height: 20px;
+  .photo-panel {
+    min-height: clamp(220px, 34vw, 300px);
   }
 
-  /* Emblem alone is enough on phones */
-  .header-org-name {
-    display: none;
+  .photo-panel-image {
+    object-position: 50% 45%;
   }
 
-  .header-emblem {
-    width: 32px;
-    height: 32px;
+  /* Same width as the form so the text lines up with it */
+  .photo-panel-content {
+    max-width: calc(380px + 2 * max(16px, env(safe-area-inset-left, 0px)));
+    margin-inline: auto;
+    gap: 12px;
+    padding: 20px max(16px, env(safe-area-inset-left, 0px));
   }
 
-  .page-main {
-    padding-top: 40px;
+  .photo-panel-emblem {
+    width: 44px;
+    height: 44px;
+  }
+
+  .photo-panel-org-name {
+    font-size: 17px;
+  }
+
+  .photo-panel-org-sub {
+    font-size: 13px;
+  }
+
+  .photo-panel-credit {
+    font-size: 11px;
+  }
+
+  /* Line the wordmark up with the left edge of the form */
+  .form-header {
+    width: 100%;
+    max-width: calc(380px + 2 * max(16px, env(safe-area-inset-left, 0px)));
+    margin-inline: auto;
+    padding: 24px max(16px, env(safe-area-inset-left, 0px)) 0;
+  }
+
+  .form-wordmark {
+    height: 22px;
+  }
+
+  .form-main {
+    align-items: flex-start;
+    padding: 28px max(16px, env(safe-area-inset-left, 0px)) 40px;
+  }
+
+  .footer {
+    justify-content: center;
+    text-align: center;
+    padding: 20px 16px;
   }
 }
 
