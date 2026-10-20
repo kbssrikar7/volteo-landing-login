@@ -3,7 +3,8 @@
 
    Deliberately monochrome: white page, near-black text and button, so the
    Smartport and APMB logos are the only colour on the page.
-   All colours are variables in :root; dark mode redefines them below.
+   The page is always light, even when the visitor's device is in dark mode.
+   All colours are variables in :root.
    ========================================================================== */
 
 :root {
@@ -23,49 +24,11 @@
   --notice-bg: #f5f5f5;
   --notice-text: #4a4a4a;
 
-  /* The Smartport wordmark is black; invert it in dark mode */
-  --wordmark-filter: none;
-
   --radius: 8px;
   --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0e0e0f;
-    --text: #f1f1f1;
-    --text-muted: #9b9b9b;
-    --border: #2c2c2e;
-    --border-hover: #4a4a4d;
-    --primary: #f1f1f1;
-    --primary-hover: #d6d6d6;
-    --primary-text: #0e0e0f;
-    --focus-ring: rgba(241, 241, 241, 0.16);
-    --error-bg: #2a1614;
-    --error-text: #f4a59b;
-    --notice-bg: #1a1a1c;
-    --notice-text: #bdbdbd;
-    --wordmark-filter: invert(1);
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme='dark'] {
-  --bg: #0e0e0f;
-  --text: #f1f1f1;
-  --text-muted: #9b9b9b;
-  --border: #2c2c2e;
-  --border-hover: #4a4a4d;
-  --primary: #f1f1f1;
-  --primary-hover: #d6d6d6;
-  --primary-text: #0e0e0f;
-  --focus-ring: rgba(241, 241, 241, 0.16);
-  --error-bg: #2a1614;
-  --error-text: #f4a59b;
-  --notice-bg: #1a1a1c;
-  --notice-text: #bdbdbd;
-  --wordmark-filter: invert(1);
-  color-scheme: dark;
+  /* Keep native controls (checkbox, scrollbars) light as well */
+  color-scheme: light;
 }
 
 /* ---------- Base ---------- */
@@ -116,7 +79,6 @@ p {
 
 .header-wordmark {
   height: 24px;
-  filter: var(--wordmark-filter);
 }
 
 .header-org {

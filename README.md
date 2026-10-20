@@ -63,7 +63,7 @@ in `src/config.js`.
   Smartport and APMB logos are the only colour. All colours are CSS
   variables at the top of `src/styles.css`.
 - Font: IBM Plex Sans (loaded from Google Fonts in `index.html`).
-- Light and dark mode both follow the visitor's system setting.
+- Always light: the page stays white even if the visitor's device is in dark mode.
 - In production, React is loaded from jsDelivr via an import map (see
   `vite.config.js`), so the built bundle is only our own ~5 KB of code.
 - Logo paths can be overridden at build time with `VITE_SMARTPORT_LOGO_URL`
