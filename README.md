@@ -21,6 +21,12 @@ npm run preview  # serve the production build locally
 During development, requests to `/api/*` are proxied to `https://smartport.ap.gov.in`
 (see `vite.config.js`), so you can log in with a real account locally.
 
+## Deployment
+
+The site deploys on Vercel. `vercel.json` sets the build (`npm run build`,
+output in `dist/`), so once the repo is connected to the Vercel project,
+every push to `main` redeploys automatically.
+
 ## Project structure
 
 ```
