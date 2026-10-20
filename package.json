@@ -4,26 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
-    "preview": "vite preview",
-    "images": "node scripts/optimize-images.mjs"
-  },
-  "dependencies": {
-    "@fontsource-variable/geist": "^5.3.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.59.0",
-    "radix-ui": "^1.8.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "tailwind-merge": "^3.7.0"
+    "start": "npx serve .",
+    "images": "node tools/optimize-images.mjs"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@vitejs/plugin-react": "^5.0.0",
-    "sharp": "^0.35.5",
-    "tailwindcss": "^4.3.3",
-    "vite": "^7.0.0"
+    "sharp": "^0.35.5"
   }
 }

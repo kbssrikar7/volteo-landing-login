@@ -9,23 +9,133 @@
       content="Sign in to Smartport, the Andhra Pradesh Maritime Board portal for gate passes, port dues and vessel registration."
     />
     <meta name="theme-color" content="#0b3a54" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-    <!--
-      Start downloading the background photo straight away, before the
-      JavaScript runs. Keep srcset/sizes in sync with OceanBackground.jsx.
-    -->
+    <!-- Start downloading the font and background photo straight away. -->
+    <link rel="preload" href="fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link
       rel="preload"
       as="image"
       type="image/avif"
       fetchpriority="high"
-      imagesrcset="/img/container-ship-640.avif 640w, /img/container-ship-960.avif 960w, /img/container-ship-1280.avif 1280w, /img/container-ship-1600.avif 1600w, /img/container-ship-2400.avif 2400w"
+      imagesrcset="img/container-ship-640.avif 640w, img/container-ship-960.avif 960w, img/container-ship-1280.avif 1280w, img/container-ship-1600.avif 1600w, img/container-ship-2400.avif 2400w"
       imagesizes="(min-width: 1024px) 116vw, (min-width: 640px) 100vw, 135vw"
     />
+
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/login.js" defer></script>
   </head>
+
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="page">
+      <!--
+        Background: photo of a container ship at sea.
+        Large screens: fills the page, the card sits on the water to the right.
+        Phones/tablets: shown at full width at the top, then fades into the page colour.
+        Photo source and licence are in the README ("Photo credit").
+      -->
+      <div class="ocean" aria-hidden="true">
+        <picture>
+          <source
+            type="image/avif"
+            srcset="img/container-ship-640.avif 640w, img/container-ship-960.avif 960w, img/container-ship-1280.avif 1280w, img/container-ship-1600.avif 1600w, img/container-ship-2400.avif 2400w"
+            sizes="(min-width: 1024px) 116vw, (min-width: 640px) 100vw, 135vw"
+          />
+          <source
+            type="image/webp"
+            srcset="img/container-ship-640.webp 640w, img/container-ship-960.webp 960w, img/container-ship-1280.webp 1280w, img/container-ship-1600.webp 1600w, img/container-ship-2400.webp 2400w"
+            sizes="(min-width: 1024px) 116vw, (min-width: 640px) 100vw, 135vw"
+          />
+          <img
+            src="img/container-ship-1600.jpg"
+            alt=""
+            width="2400"
+            height="1800"
+            fetchpriority="high"
+          />
+        </picture>
+      </div>
+
+      <div class="layout">
+        <header class="header">
+          <!-- Shown by login.js everywhere except smartport.ap.gov.in, where sign-in really works -->
+          <p class="preview-note" id="preview-note" hidden>
+            Design preview<span class="preview-note-more"> · sign-in works only on smartport.ap.gov.in</span>
+          </p>
+        </header>
+
+        <main class="main">
+          <section class="card" aria-labelledby="title">
+            <form class="form" id="login-form" novalidate>
+              <div>
+                <!-- Brand lockup: Smartport wordmark and the APMB emblem -->
+                <div class="brand">
+                  <img src="img/smartport-logo.png" alt="Smartport" width="274" height="54" class="brand-wordmark" />
+                  <img src="img/apmb-emblem.webp" alt="Andhra Pradesh Maritime Board" width="96" height="95" class="brand-emblem" />
+                </div>
+
+                <h1 class="title" id="title">Sign in</h1>
+                <p class="subtitle">Gate passes, port dues and vessel registration.</p>
+              </div>
+
+              <!-- Error message, filled in by login.js -->
+              <div class="alert" id="form-error" role="alert" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
+                <p class="alert-text" id="form-error-text"></p>
+              </div>
+
+              <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" autocomplete="username" placeholder="name@company.com" autofocus required />
+              </div>
+
+              <div class="field">
+                <div class="field-row">
+                  <label for="password">Password</label>
+                  <a class="link" data-link="forgotPassword" href="https://smartport.ap.gov.in/#/forgot-password">Forgot password?</a>
+                </div>
+                <div class="password">
+                  <input id="password" name="password" type="password" autocomplete="current-password" required />
+                  <button type="button" class="password-toggle" id="password-toggle" aria-label="Show password">
+                    <!-- Eye (shown while the password is hidden) -->
+                    <svg class="icon-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                    <!-- Eye with a line through it (shown while the password is visible) -->
+                    <svg class="icon-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <label class="checkbox">
+                <input type="checkbox" id="remember" />
+                Keep my email on this device
+              </label>
+
+              <button type="submit" class="button" id="submit">
+                <svg class="spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+                <span id="submit-label">Sign in</span>
+              </button>
+
+              <p class="separator"><span>New to Smartport?</span></p>
+
+              <div class="secondary-actions">
+                <a class="button-outline" data-link="signUp" href="https://smartport.ap.gov.in/#/sign-up">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>
+                  Create account
+                </a>
+                <a class="button-outline" data-link="ivRegistration" href="https://smartport.ap.gov.in/#/iv-reg">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" /></svg>
+                  IV Upskill
+                </a>
+              </div>
+            </form>
+          </section>
+        </main>
+
+        <footer class="footer">
+          <span>© Andhra Pradesh Maritime Board</span>
+          <span>Best viewed in Chrome or Edge</span>
+        </footer>
+      </div>
+    </div>
   </body>
 </html>
