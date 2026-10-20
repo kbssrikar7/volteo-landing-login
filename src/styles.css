@@ -153,17 +153,6 @@ p {
   color: var(--on-photo-muted);
 }
 
-.photo-panel-credit {
-  font-size: 12px;
-  color: var(--on-photo-muted);
-}
-
-.photo-panel-credit a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
 /* ---------- Sign-in form ---------- */
 
 .login {
@@ -423,10 +412,6 @@ p {
 
   .photo-panel-org-sub {
     font-size: 13px;
-  }
-
-  .photo-panel-credit {
-    font-size: 11px;
   }
 
   /* Line the wordmark up with the left edge of the form */

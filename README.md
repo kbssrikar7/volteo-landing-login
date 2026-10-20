@@ -91,9 +91,9 @@ in `src/config.js`.
 `public/img/krishnapatnam-port.jpg` is a black-and-white crop of
 [Krishnapatnam port cranes unloading a ship](https://commons.wikimedia.org/wiki/File:Krishnapatnam_port_cranes_unloadng_a_ship.jpg)
 by Rahmanuddin, licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-The licence requires the credit, so keep it visible on the page
-(`src/components/PhotoPanel.jsx`). If you replace the photo, update the
-credit there too.
+This is a design mockup, so the credit is not shown on the page. Before any
+production use, either show this credit on the page or replace the photo
+with one APMB owns.
 
 ## License
 
