@@ -1,8 +1,8 @@
 # volteo-landing-login
 smartport login pane re-design
 
-A redesigned, minimal login page for [Smartport](https://smartport.ap.gov.in), built with
-React, Vite, [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com).
+A redesigned, minimal login page for [Smartport](https://smartport.ap.gov.in), written in
+plain HTML, CSS and JavaScript. No framework, no build step, no runtime dependencies.
 
 **Live preview:** https://job-one-lilac.vercel.app (sign-in is disabled outside smartport.ap.gov.in)
 
@@ -12,64 +12,44 @@ React, Vite, [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.
 
 ## Getting started
 
+There is nothing to build. Open the folder with any static web server:
+
 ```bash
-npm install
-npm run dev      # start local dev server at http://localhost:5173
-npm run build    # production build into dist/ (pre-rendered, see Performance)
-npm run preview  # serve the production build locally
-npm run images   # regenerate optimised images after changing one in images-src/
+npx serve .                      # or: python3 -m http.server 8000
 ```
 
-During development, requests to `/api/*` are proxied to `https://smartport.ap.gov.in`
-(see `vite.config.js`), so you can log in with a real account locally.
+Then open the address it prints. Opening `index.html` directly from disk also
+works for checking the design.
 
-## Deployment
+Only needed when you replace an image:
 
-The site deploys on Vercel. `vercel.json` sets the build (`npm run build`,
-output in `dist/`), so once the repo is connected to the Vercel project,
-every push to `main` redeploys automatically.
+```bash
+npm install      # installs sharp (image tool), nothing else
+npm run images   # regenerate the optimised images from images-src/
+```
 
 ## Project structure
 
 ```
+index.html                The page: photo, sign-in card, footer
+css/styles.css            All styles: colours, layout, form controls, breakpoints
+js/login.js               Behaviour: show/hide password, remember email, sign-in
+img/                      Optimised images generated from images-src/ (do not edit by hand)
+fonts/geist-latin.woff2   Geist font, self-hosted (licence in fonts/GEIST-LICENSE.txt)
+favicon.png               Browser tab icon
 images-src/               Original images (edit these, then run `npm run images`)
-public/img/               Optimised images generated from images-src/ (do not edit by hand)
-scripts/
-  optimize-images.mjs     Makes the AVIF/WebP sizes of the photo, the emblem and favicon
-  prerender.mjs           Renders the page to HTML at build time
-src/
-  main.jsx                Entry point: loads font and styles, starts React
-  entry-server.jsx        Used by prerender.mjs to render the page at build time
-  index.css               Tailwind setup and the shadcn/ui theme colours
-  App.jsx                 Page layout: logos, sign-in card floating on the photo, footer
-  config.js               URLs, localStorage keys and logo paths (edit here first)
-  components/
-    LoginForm.jsx         The sign-in form: fields, validation, submit
-    OceanBackground.jsx   Full-page photo of a container ship at sea (slow drift)
-    ui/                   shadcn/ui components (button, field, input, label, checkbox, alert, separator)
-  lib/
-    utils.js              cn() helper used by the shadcn/ui components
-  services/
-    auth.js               API calls: login() and logout()
-components.json           shadcn/ui settings (JavaScript, neutral theme)
+tools/optimize-images.mjs Makes the AVIF/WebP sizes of the photo, the emblem and favicon
 ```
 
-## UI components (shadcn/ui)
+Where to change things:
 
-The form is built from [shadcn/ui](https://ui.shadcn.com) components. They are
-copied into `src/components/ui/` (not installed as a package), so you can edit
-them directly. To add another one, for example a dialog:
-
-```bash
-npx shadcn@latest add dialog
-```
-
-Styling uses Tailwind CSS classes. Icons come from
-[lucide-react](https://lucide.dev).
+- **URLs, links, localStorage keys:** the "Settings" block at the top of `js/login.js`.
+- **Colours, radius:** the CSS variables in `:root` at the top of `css/styles.css`.
+- **Text and logos:** `index.html`.
 
 ## How login works
 
-1. `LoginForm` calls `login(email, password)` from `services/auth.js`.
+1. The form's submit handler in `js/login.js` calls `login(email, password)`.
 2. `login` POSTs to `/api/authenticate` and stores the returned token in
    `localStorage["token"]`.
 3. It then loads the profile from `/api/user/me` (sending the token in the
@@ -79,46 +59,54 @@ Styling uses Tailwind CSS classes. Icons come from
 
 The storage keys match what the existing Smartport app reads, so the user stays
 logged in after the redirect. If you change them, update `STORAGE_KEYS` in
-`src/config.js`.
+`js/login.js`.
+
+The API calls use relative URLs (`/api/...`), so the page has to be served
+from the same domain as the Smartport API to sign in for real. A plain local
+server has no `/api`, so on `localhost` a sign-in attempt shows an error;
+everything else (validation, password toggle, remember email) works.
 
 Sign-in only runs on `smartport.ap.gov.in` (and `localhost` for development).
 On any other address, such as the Vercel preview, the page shows a
 "Design preview" note and never sends credentials. See `IS_DESIGN_PREVIEW`
-in `src/config.js`.
+in `js/login.js`.
+
+## Deployment
+
+The site deploys on Vercel as static files. `vercel.json` turns off the
+install and build steps and sets cache headers; `.vercelignore` keeps the
+source images, tools and docs out of the deployment. Once the repo is
+connected to the Vercel project, every push to `main` redeploys automatically.
+
+On any other host, upload `index.html`, `favicon.png` and the `css/`, `js/`,
+`img/` and `fonts/` folders.
 
 ## Performance
 
-Measured with Lighthouse (the engine behind PageSpeed Insights), mobile
-settings, median of 3 runs, before and after the optimisation work:
+Lighthouse (the engine behind PageSpeed Insights):
 
-| | Score | First paint | Main content (LCP) | Speed Index | Page weight |
-| --- | --- | --- | --- | --- | --- |
-| Before | 92 | 2.39 s | 2.47 s | 4.28 s | 712 KB |
-| After | 99 | 1.42 s | 2.02 s | 1.42 s | 207 KB |
+| | Performance | Accessibility | Best practices | SEO | LCP | Page weight |
+| --- | --- | --- | --- | --- | --- | --- |
+| Mobile | 99 | 100 | 100 | 100 | 1.8 s | 130 KB |
+| Desktop | 100 | 100 | 100 | 100 | 0.4 s | 155 KB |
 
 What makes it fast:
 
-- **Pre-rendered HTML.** `npm run build` renders the page to HTML at build time
-  (`scripts/prerender.mjs`), so visitors see the full page before the
-  JavaScript loads. React then attaches to that HTML ("hydration"). Anything
-  that depends on the browser (the remembered email, the "Design preview"
-  note) is read after the page loads, in a `useEffect`, so the pre-rendered
-  HTML and the browser always match.
+- **No framework.** The HTML is the page, so it shows as soon as it arrives.
+  The only script (`js/login.js`, about 6 KB) loads with `defer` and only adds
+  behaviour.
 - **Right-sized photo.** The background photo is served as AVIF (or WebP) at
   five widths, and the browser downloads only the size it needs: about 20 to
   90 KB instead of 515 KB. It is preloaded in `index.html` with high priority.
-- **Self-hosted font.** Geist comes from `@fontsource-variable/geist` and is
-  served from this site (no Google Fonts request). The main font file is
-  preloaded.
-- **Caching.** Hashed files in `/assets` are cached for a year; images for a
-  week (`vercel.json`).
+- **Self-hosted font.** Geist is served from this site (no Google Fonts
+  request) and preloaded.
+- **Caching.** The font is cached for a year, images for a week (`vercel.json`).
 - **Smooth animation.** The background drift only moves the image (a GPU
-  transform). A Chrome DevTools trace with a 4x slower CPU showed a steady
-  60 fps with no repaints or layout work.
+  transform), so there is no repainting or layout work while it runs.
 
 If you change the photo: put the original in `images-src/`, run
-`npm run images`, and keep the widths and `sizes` in
-`src/components/OceanBackground.jsx` and the preload in `index.html` in sync.
+`npm run images`, and keep the widths and `sizes` in the `<picture>` and the
+preload in `index.html` in sync.
 
 ## Design notes
 
@@ -129,31 +117,28 @@ If you change the photo: put the original in `images-src/`, run
   into the same deep-sea blue as the page.
 - The photo drifts very slowly toward the ship's heading (40 seconds each
   way). It stays still for visitors who have "reduce motion" turned on.
-  The animation is `drift` in `src/index.css`.
+  The animation is `drift` in `css/styles.css`.
 - Colours come from the photo: **deep-sea blue** (`#0e4266`) for buttons and
   links, the **open water** (`#0b3a54`) behind the photo, and a dark ink
-  (`#0c1f2e`) for text. They are CSS variables in `src/index.css`.
-- Font: Geist (loaded from Google Fonts in `index.html`, set as `--font-sans`
-  in `src/index.css`).
+  (`#0c1f2e`) for text.
+- Font: [Geist](https://vercel.com/font) (SIL Open Font License).
 - Always light: the card stays white even if the visitor's device is in dark
-  mode. The `dark:` styles in the shadcn components only apply inside a
-  `.dark` element, which this page never uses (see `src/index.css`).
-- Logo paths can be overridden at build time with `VITE_SMARTPORT_LOGO_URL`
-  and `VITE_APMB_LOGO_URL`.
+  mode (`color-scheme: light`, no dark-mode styles).
+- Icons are inline SVGs from [Lucide](https://lucide.dev) (ISC licence).
 
 ## What changed from the old page
 
 - Sign-in card floating on a full-page photo of a container ship at sea
 - Visible labels instead of placeholder-only fields
 - Show/Hide password toggle (eye icon)
-- "Forgot password?" next to the password field; "Create an account" below the button
+- "Forgot password?" next to the password field; "Create account" below the button
 - "Keep my email on this device" actually remembers the email
 - Clear error messages and a "Signing in…" state while waiting
-- Responsive on mobile; consistent shadcn/ui components and theme
+- Responsive on phones, tablets, laptops and large screens
 
 ## Photo credit
 
-`images-src/container-ship.jpg` (and the sizes generated from it in `public/img/`) is
+`images-src/container-ship.jpg` (and the sizes generated from it in `img/`) is
 [MSC Lisa in Port Phillip Bay](https://unsplash.com/photos/ZT3i-6XW8J8)
 by Haydn, free to use under the [Unsplash License](https://unsplash.com/license)
 (no credit required). Any stock photo with open water on one side works; keep

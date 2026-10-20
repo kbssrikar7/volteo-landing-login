@@ -1,4 +1,4 @@
-// Generates the optimised images in public/img from the originals in images-src/.
+// Generates the optimised images in img/ from the originals in images-src/.
 // Run with: npm run images   (only needed when an original image changes)
 //
 // - The background photo is saved at several widths in AVIF and WebP, plus one
@@ -8,7 +8,7 @@
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 
-const OUT = 'public/img';
+const OUT = 'img';
 const PHOTO = 'images-src/container-ship.jpg';
 const PHOTO_WIDTHS = [640, 960, 1280, 1600, 2400];
 
@@ -25,6 +25,6 @@ await sharp(PHOTO).resize({ width: 1600 }).jpeg({ quality: 72, progressive: true
 await sharp('images-src/apmb-emblem.png').resize({ width: 96 }).webp({ quality: 85 }).toFile(`${OUT}/apmb-emblem.webp`);
 
 // Small PNG for the browser tab icon.
-await sharp('images-src/apmb-emblem.png').resize({ width: 48 }).png({ compressionLevel: 9 }).toFile('public/favicon.png');
+await sharp('images-src/apmb-emblem.png').resize({ width: 48 }).png({ compressionLevel: 9 }).toFile('favicon.png');
 
 console.log('Images written to', OUT);

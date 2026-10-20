@@ -1,0 +1,615 @@
+/* ==========================================================================
+   Smartport sign-in page
+
+   Colours come from the background photo of a container ship at sea:
+   deep-sea blue for the button and links, the open water behind the photo,
+   and a dark ink for text. Change them here, not in individual rules.
+
+   Screen sizes used below:
+     640px  (sm)  large phones and up
+     768px  (md)  tablets and up
+     1024px (lg)  laptops and up: photo fills the page, card on the right
+     1280px (xl)  desktops
+     1536px (2xl) large desktops
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('../fonts/geist-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #0c1f2e;            /* text */
+  --muted: #566577;          /* secondary text */
+  --primary: #0e4266;        /* deep-sea blue: button, links, focus */
+  --primary-hover: #0d3b5c;
+  --ocean: #0b3a54;          /* open water in the photo, page colour */
+  --white: #ffffff;
+  --border: #dde4ea;
+  --input-border: #d1d9e1;
+  --hover-bg: #eaf2f8;
+  --danger: #c4321c;
+  --focus-ring: rgba(14, 66, 102, 0.5);
+
+  --radius: 6px;
+  --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* The page is always light, even when the device is in dark mode */
+  color-scheme: light;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--ocean);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+img,
+svg {
+  display: block;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Icons are inline SVGs drawn with lines (same style as the Lucide icon set) */
+svg[viewBox='0 0 24 24'] {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Page and background photo ---------- */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--ocean);
+}
+
+.ocean {
+  position: absolute;
+  z-index: 0; /* keeps the gradient overlays below the card */
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+/* Phones: photo is a bit wider than the screen so the ship looks bigger */
+.ocean img {
+  display: block;
+  width: 135vw;
+  max-width: none;
+  height: auto;
+  margin-left: -5vw;
+}
+
+/* Darken the top edge slightly */
+.ocean::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 30%);
+}
+
+/* Phones and tablets: fade the bottom of the photo into the page colour */
+.ocean::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, var(--ocean), rgba(11, 58, 84, 0) 30%, transparent);
+}
+
+/* Very slow drift toward the ship's heading. It only moves the image
+   (no repainting), so it stays smooth on slow phones. Off for visitors who
+   prefer reduced motion. */
+@keyframes drift {
+  from {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(-2%, 1.5%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ocean img {
+    animation: drift 40s ease-in-out infinite alternate;
+  }
+}
+
+/* ---------- Layout ---------- */
+
+.layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 80px;
+  padding: 24px;
+}
+
+.preview-note {
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.preview-note-more {
+  display: none;
+}
+
+/* The card starts just below the ship (which scales with the screen width) */
+.main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(66vw - 5rem) 16px 40px;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 24px;
+  padding: 0 24px 24px;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Card ---------- */
+
+.card {
+  width: 100%;
+  max-width: 25rem;
+  padding: 28px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 30px 80px -20px rgba(4, 20, 32, 0.65);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.brand-wordmark {
+  width: auto;
+  height: 24px;
+}
+
+.brand-emblem {
+  width: 36px;
+  height: 36px;
+}
+
+.title {
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+/* ---------- Fields ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+}
+
+label {
+  font-size: 14px;
+  line-height: 1.375;
+  font-weight: 500;
+}
+
+.link {
+  margin-left: auto;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+input[type='email'],
+input[type='password'],
+input[type='text'] {
+  width: 100%;
+  height: 44px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 16px; /* 16px on phones stops iOS from zooming in */
+  line-height: 20px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: color 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+input::placeholder {
+  color: var(--muted);
+}
+
+input:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-ring), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+/* Password field with the show/hide button inside it */
+.password {
+  position: relative;
+}
+
+.password input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  color: var(--primary);
+  background: var(--hover-bg);
+}
+
+.password-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.password-toggle .icon-hide,
+.password-toggle[aria-pressed='true'] .icon-show {
+  display: none;
+}
+
+.password-toggle[aria-pressed='true'] .icon-hide {
+  display: block;
+}
+
+/* Checkbox */
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.checkbox input {
+  appearance: none;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  background: var(--white) center / 14px no-repeat;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.checkbox input:checked {
+  /* White tick */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkbox input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  padding: 0 24px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--white);
+  background: var(--primary);
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.button:hover {
+  background: var(--primary-hover);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.spinner {
+  display: none;
+}
+
+.button[aria-busy='true'] .spinner {
+  display: block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* "New to Smartport?" divider */
+.separator {
+  position: relative;
+  margin: -8px 0;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.separator span {
+  position: relative;
+  padding: 0 8px;
+  color: var(--muted);
+  background: var(--white);
+}
+
+.secondary-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.button-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background 0.15s;
+}
+
+.button-outline:hover {
+  background: var(--hover-bg);
+}
+
+.button-outline:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* ---------- Error message ---------- */
+
+.alert {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--danger);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.alert svg {
+  margin-top: 2px;
+}
+
+/* ---------- Large phones and up ---------- */
+
+@media (min-width: 640px) {
+  .ocean img {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .main {
+    padding-top: calc(48vw - 3.5rem);
+  }
+
+  .card {
+    padding: 36px;
+  }
+}
+
+/* ---------- Tablets and up ---------- */
+
+@media (min-width: 768px) {
+  .preview-note-more {
+    display: inline;
+  }
+
+  input[type='email'],
+  input[type='password'],
+  input[type='text'] {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Laptops and up: photo fills the page, card on the right ---------- */
+
+@media (min-width: 1024px) {
+  /* The photo is shifted left a little so the ship clears the card */
+  .ocean {
+    inset: 0 0 0 -16vw;
+  }
+
+  .ocean img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 30% 45%;
+  }
+
+  .ocean::after {
+    display: none;
+  }
+
+  .header {
+    min-height: 56px;
+    padding: 16px 40px;
+  }
+
+  .main {
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 3.5vw;
+  }
+
+  .card {
+    padding: 32px;
+  }
+
+  .footer {
+    justify-content: flex-start;
+    padding: 0 40px 24px;
+  }
+}
+
+/* ---------- Desktops ---------- */
+
+@media (min-width: 1280px) {
+  .ocean {
+    left: 0;
+  }
+}
+
+/* ---------- Large desktops ---------- */
+
+@media (min-width: 1536px) {
+  .main {
+    padding-left: 7vw;
+    padding-right: 7vw;
+  }
+}
