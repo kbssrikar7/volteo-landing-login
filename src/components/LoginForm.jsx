@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { ArrowRight, CircleAlert, Eye, EyeOff, Info, LoaderCircle } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, GraduationCap, Info, LoaderCircle, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { login } from '@/services/auth';
@@ -17,6 +18,7 @@ function getRememberedEmail() {
   }
 }
 
+// The sign-in form: fields, validation and submit.
 export default function LoginForm() {
   // Form fields
   const [email, setEmail] = useState(getRememberedEmail);
@@ -63,15 +65,15 @@ export default function LoginForm() {
   }
 
   return (
-    <section className="w-full max-w-sm" aria-labelledby="login-title">
-      <h1 id="login-title" className="text-3xl font-semibold tracking-tight">
-        Sign in
-      </h1>
-      <p className="mt-1.5 text-muted-foreground">
-        Use the email address registered with Smartport.
-      </p>
+    <form onSubmit={handleSubmit} noValidate>
+      <FieldGroup>
+        <div>
+          <h1 className="text-[1.75rem] leading-tight font-semibold tracking-tight">Sign in to Smartport</h1>
+          <p className="mt-2 text-muted-foreground">
+            Gate passes, port dues and vessel registration for the ports of Andhra Pradesh.
+          </p>
+        </div>
 
-      <div className="mt-8 grid gap-3 empty:hidden">
         {IS_DESIGN_PREVIEW && (
           <Alert>
             <Info />
@@ -85,11 +87,9 @@ export default function LoginForm() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-      </div>
 
-      <form className="mt-6 grid gap-5" onSubmit={handleSubmit} noValidate>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email address</Label>
+        <Field>
+          <FieldLabel htmlFor="email">Email address</FieldLabel>
           <Input
             id="email"
             type="email"
@@ -101,15 +101,12 @@ export default function LoginForm() {
             autoFocus
             required
           />
-        </div>
+        </Field>
 
-        <div className="grid gap-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <a
-              href={LINKS.forgotPassword}
-              className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-            >
+        <Field>
+          <div className="flex items-center">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <a href={LINKS.forgotPassword} className="ml-auto text-sm font-medium text-primary underline-offset-4 hover:underline">
               Forgot password?
             </a>
           </div>
@@ -134,7 +131,7 @@ export default function LoginForm() {
               {showPassword ? <EyeOff /> : <Eye />}
             </Button>
           </div>
-        </div>
+        </Field>
 
         <div className="flex items-center gap-2.5">
           <Checkbox
@@ -147,27 +144,30 @@ export default function LoginForm() {
           </Label>
         </div>
 
-        <Button type="submit" size="lg" className="mt-1 h-11 w-full" disabled={isSubmitting}>
-          {isSubmitting && <LoaderCircle className="animate-spin" />}
-          {isSubmitting ? 'Signing in…' : 'Sign in'}
-        </Button>
-      </form>
+        <Field>
+          <Button type="submit" size="lg" className="h-11 text-[15px]" disabled={isSubmitting}>
+            {isSubmitting && <LoaderCircle className="animate-spin" />}
+            {isSubmitting ? 'Signing in…' : 'Sign in'}
+          </Button>
+        </Field>
 
-      <p className="mt-6 text-sm text-muted-foreground">
-        New to Smartport?{' '}
-        <a href={LINKS.signUp} className="font-medium text-foreground underline underline-offset-4">
-          Create an account
-        </a>
-      </p>
+        <FieldSeparator>New to Smartport?</FieldSeparator>
 
-      <Button asChild variant="outline" className="mt-10 h-12 w-full justify-between px-4">
-        <a href={LINKS.ivRegistration}>
-          IV Upskill Program
-          <span className="flex items-center gap-1.5 font-normal text-muted-foreground">
-            Register <ArrowRight />
-          </span>
-        </a>
-      </Button>
-    </section>
+        <Field className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="h-10" asChild>
+            <a href={LINKS.signUp}>
+              <UserPlus />
+              Create account
+            </a>
+          </Button>
+          <Button variant="outline" className="h-10" asChild>
+            <a href={LINKS.ivRegistration}>
+              <GraduationCap />
+              IV Upskill
+            </a>
+          </Button>
+        </Field>
+      </FieldGroup>
+    </form>
   );
 }

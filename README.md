@@ -31,17 +31,16 @@ every push to `main` redeploys automatically.
 ## Project structure
 
 ```
-public/img/               Official logos and the Krishnapatnam Port photo
+public/img/               Official logos and the container ship photo
 src/
   main.jsx                Entry point: mounts <App /> and loads styles
   index.css               Tailwind setup and the shadcn/ui theme colours
-  App.jsx                 Page layout: PhotoPanel (left), LoginForm + Footer (right)
+  App.jsx                 Page layout: logos, sign-in card floating on the photo, footer
   config.js               URLs, localStorage keys and logo paths (edit here first)
   components/
-    PhotoPanel.jsx        Black-and-white port photo with the APMB emblem
     LoginForm.jsx         The sign-in form: fields, validation, submit
-    Footer.jsx            Copyright and browser note
-    ui/                   shadcn/ui components (button, input, label, checkbox, alert)
+    OceanBackground.jsx   Full-page photo of a container ship at sea (slow drift)
+    ui/                   shadcn/ui components (button, field, input, label, checkbox, alert, separator)
   lib/
     utils.js              cn() helper used by the shadcn/ui components
   services/
@@ -83,13 +82,20 @@ in `src/config.js`.
 
 ## Design notes
 
-- Black and white on purpose: a black-and-white port photo on the left, a
-  white form on the right, near-black text and button. The logos are the
-  only colour. Colours are shadcn/ui's "neutral" theme, defined as CSS
-  variables in `src/index.css`.
-- On tablets and phones the photo becomes a banner above the form.
-- Font: IBM Plex Sans (loaded from Google Fonts in `index.html`).
-- Always light: the page stays white even if the visitor's device is in dark
+- The whole page is a photo of a container ship at sea, seen from above.
+  The white sign-in card floats on the open water: to the right of the ship
+  on large screens, below it on phones and tablets. On phones and tablets the
+  photo is shown at full width so the whole ship stays visible, then fades
+  into the same deep-sea blue as the page.
+- The photo drifts very slowly toward the ship's heading (40 seconds each
+  way). It stays still for visitors who have "reduce motion" turned on.
+  The animation is `drift` in `src/index.css`.
+- Colours come from the photo: **deep-sea blue** (`#0e4266`) for buttons and
+  links, the **open water** (`#0b3a54`) behind the photo, and a dark ink
+  (`#0c1f2e`) for text. They are CSS variables in `src/index.css`.
+- Font: Geist (loaded from Google Fonts in `index.html`, set as `--font-sans`
+  in `src/index.css`).
+- Always light: the card stays white even if the visitor's device is in dark
   mode. The `dark:` styles in the shadcn components only apply inside a
   `.dark` element, which this page never uses (see `src/index.css`).
 - Logo paths can be overridden at build time with `VITE_SMARTPORT_LOGO_URL`
@@ -97,7 +103,7 @@ in `src/config.js`.
 
 ## What changed from the old page
 
-- Split layout: photo of an Andhra Pradesh port beside the sign-in form
+- Sign-in card floating on a full-page photo of a container ship at sea
 - Visible labels instead of placeholder-only fields
 - Show/Hide password toggle (eye icon)
 - "Forgot password?" next to the password field; "Create an account" below the button
@@ -107,12 +113,11 @@ in `src/config.js`.
 
 ## Photo credit
 
-`public/img/krishnapatnam-port.jpg` is a black-and-white crop of
-[Krishnapatnam port cranes unloading a ship](https://commons.wikimedia.org/wiki/File:Krishnapatnam_port_cranes_unloadng_a_ship.jpg)
-by Rahmanuddin, licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-This is a design mockup, so the credit is not shown on the page. Before any
-production use, either show this credit on the page or replace the photo
-with one APMB owns.
+`public/img/container-ship.jpg` is
+[MSC Lisa in Port Phillip Bay](https://unsplash.com/photos/ZT3i-6XW8J8)
+by Haydn, free to use under the [Unsplash License](https://unsplash.com/license)
+(no credit required). Any stock photo with open water on one side works; keep
+the ship on the left so the card has room on the right.
 
 ## License
 
