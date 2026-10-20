@@ -1,0 +1,392 @@
+/* ==========================================================================
+   Smartport login styles
+
+   Deliberately monochrome: white page, near-black text and button, so the
+   Smartport and APMB logos are the only colour on the page.
+   All colours are variables in :root; dark mode redefines them below.
+   ========================================================================== */
+
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --text-muted: #6b6b6b;
+  --border: #dedede;
+  --border-hover: #b5b5b5;
+
+  --primary: #111111;
+  --primary-hover: #333333;
+  --primary-text: #ffffff;
+  --focus-ring: rgba(17, 17, 17, 0.12);
+
+  --error-bg: #fdf2f1;
+  --error-text: #b42318;
+  --notice-bg: #f5f5f5;
+  --notice-text: #4a4a4a;
+
+  /* The Smartport wordmark is black; invert it in dark mode */
+  --wordmark-filter: none;
+
+  --radius: 8px;
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0e0e0f;
+    --text: #f1f1f1;
+    --text-muted: #9b9b9b;
+    --border: #2c2c2e;
+    --border-hover: #4a4a4d;
+    --primary: #f1f1f1;
+    --primary-hover: #d6d6d6;
+    --primary-text: #0e0e0f;
+    --focus-ring: rgba(241, 241, 241, 0.16);
+    --error-bg: #2a1614;
+    --error-text: #f4a59b;
+    --notice-bg: #1a1a1c;
+    --notice-text: #bdbdbd;
+    --wordmark-filter: invert(1);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0e0e0f;
+  --text: #f1f1f1;
+  --text-muted: #9b9b9b;
+  --border: #2c2c2e;
+  --border-hover: #4a4a4d;
+  --primary: #f1f1f1;
+  --primary-hover: #d6d6d6;
+  --primary-text: #0e0e0f;
+  --focus-ring: rgba(241, 241, 241, 0.16);
+  --error-bg: #2a1614;
+  --error-text: #f4a59b;
+  --notice-bg: #1a1a1c;
+  --notice-text: #bdbdbd;
+  --wordmark-filter: invert(1);
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin: 0;
+}
+
+/* ---------- Page layout ---------- */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 12vh max(16px, env(safe-area-inset-left, 0px)) 64px;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px max(24px, env(safe-area-inset-left, 0px));
+  border-bottom: 1px solid var(--border);
+}
+
+.header-wordmark {
+  height: 24px;
+  filter: var(--wordmark-filter);
+}
+
+.header-org {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-emblem {
+  width: 36px;
+  height: 36px;
+}
+
+.header-org-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ---------- Sign-in form ---------- */
+
+.login {
+  width: 100%;
+  max-width: 360px;
+}
+
+.login-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.login-subtitle {
+  margin: 6px 0 28px;
+  color: var(--text-muted);
+}
+
+.login-form {
+  display: grid;
+  gap: 18px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.field-label-row .link {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.field input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font: inherit;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input:hover {
+  border-color: var(--border-hover);
+}
+
+.field input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* Password input with the Show/Hide button inside it */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 64px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--text);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--text);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+/* ---------- Button ---------- */
+
+.button {
+  height: 46px;
+  margin-top: 4px;
+  font: inherit;
+  font-weight: 500;
+  color: var(--primary-text);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- Links and messages ---------- */
+
+.link {
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--border-hover);
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+.login-signup {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.upskill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s;
+}
+
+.upskill:hover {
+  border-color: var(--border-hover);
+}
+
+.upskill-label {
+  font-weight: 500;
+}
+
+.upskill-action {
+  color: var(--text-muted);
+}
+
+.alert,
+.preview-banner {
+  margin-bottom: 20px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: var(--radius);
+}
+
+.alert {
+  color: var(--error-text);
+  background: var(--error-bg);
+}
+
+.preview-banner {
+  color: var(--notice-text);
+  background: var(--notice-bg);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 20px;
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  .header {
+    padding: 12px max(16px, env(safe-area-inset-left, 0px));
+  }
+
+  .header-wordmark {
+    height: 20px;
+  }
+
+  /* Emblem alone is enough on phones */
+  .header-org-name {
+    display: none;
+  }
+
+  .header-emblem {
+    width: 32px;
+    height: 32px;
+  }
+
+  .page-main {
+    padding-top: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
