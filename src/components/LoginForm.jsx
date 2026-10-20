@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CircleAlert, Eye, EyeOff, GraduationCap, LoaderCircle, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { login } from '@/services/auth';
-import { AFTER_LOGIN_URL, IS_DESIGN_PREVIEW, LINKS, PASSWORD_RESET_URL, STORAGE_KEYS } from '@/config';
+import { AFTER_LOGIN_URL, LINKS, PASSWORD_RESET_URL, STORAGE_KEYS, isDesignPreview } from '@/config';
 
 // Reads the email saved by "Remember me" (empty string if none).
 function getRememberedEmail() {
@@ -21,9 +21,18 @@ function getRememberedEmail() {
 // The sign-in form: fields, validation and submit.
 export default function LoginForm() {
   // Form fields
-  const [email, setEmail] = useState(getRememberedEmail);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(() => getRememberedEmail() !== '');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Fill in the remembered email once the page is running in the browser.
+  useEffect(() => {
+    const remembered = getRememberedEmail();
+    if (remembered) {
+      setEmail(remembered);
+      setRememberMe(true);
+    }
+  }, []);
 
   // UI state
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +49,7 @@ export default function LoginForm() {
     }
 
     // The "Design preview" note in the page header explains why nothing happens.
-    if (IS_DESIGN_PREVIEW) {
+    if (isDesignPreview()) {
       return;
     }
 

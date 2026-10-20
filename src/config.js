@@ -25,13 +25,17 @@ export const STORAGE_KEYS = {
 // The real login only runs on the Smartport domain (or localhost while developing).
 // Anywhere else, e.g. a Vercel preview, the page is a design preview and
 // never sends credentials.
+// It is a function (not a constant) because the page is also rendered at
+// build time, where there is no browser window.
 const ALLOWED_HOSTS = ['smartport.ap.gov.in', 'localhost', '127.0.0.1'];
-export const IS_DESIGN_PREVIEW = !ALLOWED_HOSTS.includes(window.location.hostname);
+export function isDesignPreview() {
+  return typeof window !== 'undefined' && !ALLOWED_HOSTS.includes(window.location.hostname);
+}
 
 // Logo images. By default they come from this app's own public/img folder.
 // A build can load them from elsewhere by setting these environment variables,
 // e.g. VITE_SMARTPORT_LOGO_URL=https://smartport.ap.gov.in/img/logo.png
 export const LOGOS = {
-  smartport: import.meta.env.VITE_SMARTPORT_LOGO_URL || 'img/smartport-logo.png',
-  apmb: import.meta.env.VITE_APMB_LOGO_URL || 'img/apmb-emblem.png',
+  smartport: import.meta.env.VITE_SMARTPORT_LOGO_URL || '/img/smartport-logo.png',
+  apmb: import.meta.env.VITE_APMB_LOGO_URL || '/img/apmb-emblem.webp',
 };

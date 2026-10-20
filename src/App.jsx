@@ -1,19 +1,24 @@
 import LoginForm from '@/components/LoginForm';
 import OceanBackground from '@/components/OceanBackground';
-import { IS_DESIGN_PREVIEW, LOGOS } from '@/config';
+import { useEffect, useState } from 'react';
+import { LOGOS, isDesignPreview } from '@/config';
 
 // The photo of a ship at sea is the whole page. The sign-in card floats on
 // the open water: to the right of the ship on large screens, below it on phones.
 export default function App() {
+  // Decided in the browser, after the pre-rendered page has loaded.
+  const [showPreviewNote, setShowPreviewNote] = useState(false);
+  useEffect(() => setShowPreviewNote(isDesignPreview()), []);
+
   return (
     <div className="relative min-h-svh overflow-hidden bg-ocean">
       <OceanBackground />
 
       <div className="relative flex min-h-svh flex-col">
         <header className="flex items-center gap-4 p-6 text-white lg:px-10 lg:pt-7">
-          <img src={LOGOS.smartport} alt="Smartport" className="h-6 brightness-0 invert lg:h-7" />
+          <img src={LOGOS.smartport} alt="Smartport" width="274" height="54" className="h-6 w-auto brightness-0 invert lg:h-7" />
           <span className="h-7 w-px bg-white/30" aria-hidden="true" />
-          <img src={LOGOS.apmb} alt="" className="size-9" />
+          <img src={LOGOS.apmb} alt="" width="96" height="95" className="size-9" />
           <p className="hidden text-sm leading-tight text-white/85 sm:block">
             Andhra Pradesh
             <br />
@@ -21,7 +26,7 @@ export default function App() {
           </p>
 
           {/* Shown everywhere except smartport.ap.gov.in, where sign-in really works */}
-          {IS_DESIGN_PREVIEW && (
+          {showPreviewNote && (
             <p className="ml-auto rounded-full bg-white/15 px-3 py-1 text-xs whitespace-nowrap text-white ring-1 ring-white/25 backdrop-blur-sm">
               Design preview<span className="hidden md:inline"> · sign-in works only on smartport.ap.gov.in</span>
             </p>

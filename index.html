@@ -3,14 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="img/apmb-emblem.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
-    />
     <title>Sign in · Smartport</title>
+    <meta
+      name="description"
+      content="Sign in to Smartport, the Andhra Pradesh Maritime Board portal for gate passes, port dues and vessel registration."
+    />
+    <meta name="theme-color" content="#0b3a54" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!--
+      Start downloading the background photo straight away, before the
+      JavaScript runs. Keep srcset/sizes in sync with OceanBackground.jsx.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      fetchpriority="high"
+      imagesrcset="/img/container-ship-640.avif 640w, /img/container-ship-960.avif 960w, /img/container-ship-1280.avif 1280w, /img/container-ship-1600.avif 1600w, /img/container-ship-2400.avif 2400w"
+      imagesizes="(min-width: 1024px) 116vw, (min-width: 640px) 100vw, 135vw"
+    />
   </head>
   <body>
     <div id="root"></div>
